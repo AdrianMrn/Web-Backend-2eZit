@@ -96,11 +96,19 @@ class Controller extends BaseController
     }
 
     public function createThread() {
-
+        return view('createthread');
     }
 
-    public function postThread() {
+    public function postThread(Request $request) {
+        $thread = new Thread;
+        //return dd($request);
+        $thread->title = $request->title;
+        $thread->url = $request->url;
+        $thread->FK_user_id = Auth::user()->id;
+        $thread->remember_token = $request->_token;
+        $thread->save();
 
+        return Redirect::to(url('/'))->with('message','Comment posted successfully!');
     }
 
     public function editThread() {
@@ -148,8 +156,19 @@ class Controller extends BaseController
         return Redirect::back()->with('message','Comment posted successfully!');
     }
 
-    public function editComment() {
+    public function editComment($id) {
+        $comment = Comment::find($id);
 
+        return view ('editcomment', ['comment' => $comment]);
+    }
+
+    public function postEditedComment(Request $request) {
+        //return dd($request);
+
+        $comment = Comment::find($request->comment_id);
+
+        $comment->text = $request->body;
+        $comment->save();
 
         return Redirect::back()->with('message','Comment edited successfully!');
     }
@@ -160,7 +179,7 @@ class Controller extends BaseController
         $comment->deleted = 1;
         $comment->save();
 
-        return Redirect::back()->with('message','Comment deleted successfully!');
+        return Redirect::to(url('thread/') . '/' . $comment->FK_thread_id)->with('message','Comment deleted successfully!');
     }
 
     /*public function getWelcome(){

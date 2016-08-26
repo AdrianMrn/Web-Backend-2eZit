@@ -61,7 +61,7 @@
                                                 on {{$comment[0]->created_at}}
                                                 @if (!Auth::guest())
                                                     @if ($comment[1] == Auth::user()->name)
-                                                        <a href="{{ url('/comments/edit/{id}') }}" class="btn btn-primary btn-xs edit-btn">edit</a>
+                                                        <a href="{{ url('/comments/edit/')}}/{{$comment[0]->id}} " class="btn btn-primary btn-xs edit-btn">edit</a>
                                                         <a href="{{ url('/comments/delete/') }}/{{$comment[0]->id}}" class="btn btn-danger btn-xs edit-btn">
                                                             <i class="fa fa-btn fa-trash" title="delete"></i>
                                                             delete

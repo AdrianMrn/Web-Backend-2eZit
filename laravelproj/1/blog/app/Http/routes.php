@@ -24,8 +24,8 @@ Route::get('/thread/{id}', [
 ]);
 
 
-Route::get('/thread/add', 'Controller@createThread');
-Route::post('/thread/post', 'Controller@postThread');
+Route::get('/add', 'Controller@createThread');
+Route::post('/post', 'Controller@postThread');
 Route::get('/thread/edit/{id}', 'Controller@editThread');
 Route::post('/thread/delete/{id}', 'Controller@deleteThread');
 
@@ -36,6 +36,7 @@ Route::post('/vote/down', 'Controller@downvote');
 
 Route::post('/comments/add', 'Controller@postComment');
 Route::get('/comments/edit/{id}', 'Controller@editComment');
+Route::post('/comments/edit/post', 'Controller@postEditedComment');
 Route::get('/comments/delete/{id}', 'Controller@deleteComment');
 
 Route::auth();
