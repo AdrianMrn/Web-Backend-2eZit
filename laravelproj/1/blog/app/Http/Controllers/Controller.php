@@ -15,6 +15,7 @@ use App\Comment;
 use App\Vote;
 use App\User;
 use App\UsersUse;
+use Auth;
 
 class Controller extends BaseController
 {
@@ -93,6 +94,10 @@ class Controller extends BaseController
         return view ('thread', ['data' => $data],['comments' => $commentArray]);
     }
 
+    public function createThread() {
+
+    }
+
     public function postThread() {
 
     }
@@ -112,7 +117,7 @@ class Controller extends BaseController
         $vote = new Vote;
         $vote->upordown = 1;
         $vote->FK_thread_id = $request->article_id;
-        $vote->FK_user_id = $request->userid;
+        $vote->FK_user_id = Auth::user()->id;
         $vote->remember_token = $request->_token;
         $vote->save();
 
@@ -123,7 +128,7 @@ class Controller extends BaseController
         $vote = new Vote;
         $vote->upordown = 0;
         $vote->FK_thread_id = $request->article_id;
-        $vote->FK_user_id = $request->userid;
+        $vote->FK_user_id = Auth::user()->id;
         $vote->remember_token = $request->_token;
         $vote->save();
 
@@ -131,8 +136,15 @@ class Controller extends BaseController
     }
 
 
-    public function postComment() {
+    public function postComment(Request $request) {
+        $comment = new Comment;
+        $comment->text = $request->body;
+        $comment->FK_thread_id = $request->article_id;
+        $comment->FK_user_id = Auth::user()->id;
+        $comment->remember_token = $request->_token;
+        $comment->save();
 
+        return Redirect::back()->with('message','Operation Successful !');
     }
 
     public function editComment() {

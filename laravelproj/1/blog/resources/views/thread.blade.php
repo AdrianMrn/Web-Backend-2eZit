@@ -24,7 +24,6 @@
                             <div class="vote">
                                 <form action="{{ url('/vote/up') }}" method="POST" class="form-inline upvote">
                                     {{ csrf_field() }}
-                                    <input type="hidden" name="userid" value="{{Auth::user()->id}}">
                                     <button name="article_id" value="{{$data['thread']->id}}">
                                         <i class="fa fa-btn fa-caret-up upvote" title="upvote"></i>
                                     </button>
@@ -32,7 +31,6 @@
 
                                 <form action="{{ url('/vote/down') }}" method="POST" class="form-inline downvote">
                                     {{ csrf_field() }}
-                                    <input type="hidden" name="userid" value="{{Auth::user()->id}}">
                                     <button name="article_id" value="{{$data['thread']->id}}">
                                         <i class="fa fa-btn fa-caret-down downvote" title="downvote"></i>
                                     </button>
@@ -74,7 +72,23 @@
                                 </p>
                             </div>
                         @else
-                            textbox goes here
+                            <form action="{{ url('/comments/add') }}" method="POST" class="form-horizontal">
+                                {{ csrf_field() }}
+                                <div class="form-group">
+                                    <label for="body" class="col-sm-3 control-label">Comment</label>
+
+                                    <div class="col-sm-6"><textarea type="text" name="body" id="body" class="form-control"></textarea></div>
+                                </div>
+                                <input type="hidden" name="article_id" value="{{$data['thread']->id}}">
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-6">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class=" fa fa-plus"></i>
+                                            Add comment
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                         @endif
                     </div>
                 </div>
