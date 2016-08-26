@@ -10,14 +10,35 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Article: {{$data['thread']->title}}</div>
                     <div class="panel-content">
-                        <div class="vote">
-                            <div class="form-inline upvote">
-                                <i class="fa fa-btn fa-caret-up disabled upvote"></i>
+
+                        @if (Auth::guest())
+                            <div class="vote">
+                                <div class="form-inline upvote">
+                                    <i class="fa fa-btn fa-caret-up disabled upvote"></i>
+                                </div>
+                                <div class="form-inline upvote">
+                                    <i class="fa fa-btn fa-caret-down disabled downvote"></i>
+                                </div>
                             </div>
-                            <div class="form-inline upvote">
-                                <i class="fa fa-btn fa-caret-down disabled downvote"></i>
+                        @else
+                            <div class="vote">
+                                <form action="{{ url('/vote/up') }}" method="POST" class="form-inline upvote">
+                                    {{ csrf_field() }}
+                                    <input type="hidden" name="userid" value="{{Auth::user()->id}}">
+                                    <button name="article_id" value="{{$data['thread']->id}}">
+                                        <i class="fa fa-btn fa-caret-up upvote" title="upvote"></i>
+                                    </button>
+                                </form>
+
+                                <form action="{{ url('/vote/down') }}" method="POST" class="form-inline downvote">
+                                    {{ csrf_field() }}
+                                    <input type="hidden" name="userid" value="{{Auth::user()->id}}">
+                                    <button name="article_id" value="{{$data['thread']->id}}">
+                                        <i class="fa fa-btn fa-caret-down downvote" title="downvote"></i>
+                                    </button>
+                                </form>
                             </div>
-                        </div>
+                        @endif
 
                         <div class="url">
                             <a href="{{$data['thread']->url}}" class="urlTitle">{{$data['thread']->title}}</a>
@@ -46,11 +67,15 @@
                                 @endif
                             </ul>
                         </div>
-                        <div>
-                            <p>
-                                You need to be <a href="{{ url('/login') }}">logged in</a> to comment.
-                            </p>
-                        </div>
+                        @if (Auth::guest())
+                            <div>
+                                <p>
+                                    You need to be <a href="{{ url('/login') }}">logged in</a> to comment.
+                                </p>
+                            </div>
+                        @else
+                            textbox goes here
+                        @endif
                     </div>
                 </div>
             </div>
