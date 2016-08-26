@@ -41,6 +41,9 @@
                                 @endif
                                 <div class="url">
                                     <a href="{{$thread[0]->url}}" class="urlTitle">{{$thread[0]->title}}</a>
+                                    @if (!Auth::guest() && $thread[0]->FK_user_id == Auth::user()->id)
+                                        <a href="{{url('/thread/edit/')}}/{{$thread[0]->id}}" class="btn btn-primary btn-xs edit-btn">edit</a>
+                                    @endif
                                 </div>
 
                                 <div class="info">

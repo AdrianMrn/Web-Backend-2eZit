@@ -27,7 +27,8 @@ Route::get('/thread/{id}', [
 Route::get('/add', 'Controller@createThread');
 Route::post('/post', 'Controller@postThread');
 Route::get('/thread/edit/{id}', 'Controller@editThread');
-Route::post('/thread/delete/{id}', 'Controller@deleteThread');
+Route::post('/thread/edit/post', 'Controller@postEditedThread');
+Route::get('/thread/delete/{id}', 'Controller@deleteThread');
 
 
 Route::post('/vote/up', 'Controller@upvote');

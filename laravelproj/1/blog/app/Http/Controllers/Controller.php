@@ -33,20 +33,14 @@ class Controller extends BaseController
                 $upvotes = Vote::where(['FK_thread_id' => $thread->id, 'upordown' => 1])->count();
                 $downvotes = Vote::where(['FK_thread_id' => $thread->id, 'upordown' => 0])->count();;
                 $totalvotes = $upvotes - $downvotes;
-                //echo $totalvotes . '<br>';
                 $currentuserid = $thread->FK_user_id;
                 $currentuser = UsersUse::find($currentuserid);
                 $commentcount = Comment::where(['FK_thread_id' => $thread->id])->count();
-                //echo $commentcount . '<br>';
 
                 $threadArray[$i] = array($thread,$currentuser->name,$commentcount,$totalvotes);
                 $i++;
             }
         }
-
-        //return dd($threadArray);
-        //$users = UsersUse::all();
-
         return view ('welcome', ['threads' => $threadArray]);
 
     }
@@ -81,17 +75,10 @@ class Controller extends BaseController
 
         $data = array(
             'thread' => $thread,
-            //'comments' => $commentArray,
             'votes' => $totalvotes,
             'op' => $opName,
             'commentcount' => $commentcount
         );
-        //$threadInfo = ;
-
-        //return dd($data, $commentArray);
-
-        //return view ('thread', ['thread' => $thread],['comments' => $commentArray],['votes' => $totalvotes],['op' => $opName],['commentcount' => $commentcount]);
-        //return dd($commentArray);
         return view ('thread', ['data' => $data],['comments' => $commentArray]);
     }
 
@@ -111,18 +98,33 @@ class Controller extends BaseController
         return Redirect::to(url('/'))->with('message','Comment posted successfully!');
     }
 
-    public function editThread() {
+    public function editThread($id) {
+        $thread = Thread::find($id);
 
+        return view ('editthread', ['thread' => $thread]);
     }
 
-    public function deleteThread() {
+    public function postEditedThread(Request $request) {
+        $thread = Thread::find($request->thread_id);
+        $thread->title = $request->title;
+        $thread->url = $request->url;
 
+        $thread->save();
+
+        return Redirect::to(url('/'))->with('message','Thread edited successfully!');
+    }
+
+    public function deleteThread($id) {
+        $thread = Thread::find($id);
+
+        $thread->deleted = 1;
+        $thread->save();
+
+        return Redirect::to(url('/'))->with('message','Thread deleted successfully!');
     }
 
 
     public function upvote(Request $request) {
-        //return dd($request);
-
         $vote = new Vote;
         $vote->upordown = 1;
         $vote->FK_thread_id = $request->article_id;
@@ -163,7 +165,6 @@ class Controller extends BaseController
     }
 
     public function postEditedComment(Request $request) {
-        //return dd($request);
 
         $comment = Comment::find($request->comment_id);
 
@@ -181,11 +182,4 @@ class Controller extends BaseController
 
         return Redirect::to(url('thread/') . '/' . $comment->FK_thread_id)->with('message','Comment deleted successfully!');
     }
-
-    /*public function getWelcome(){
-        $users = UsersUse::with("thread")->get();
-
-        return view ('welcome', ['users' => $users]);
-        //return $users;
-    }*/
 }

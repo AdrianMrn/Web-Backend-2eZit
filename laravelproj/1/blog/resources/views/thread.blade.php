@@ -8,7 +8,14 @@
                     <a href="../">← back to overview</a>
                 </div>
                 <div class="panel panel-default">
-                    <div class="panel-heading">Article: {{$data['thread']->title}}</div>
+                    <div class="panel-heading">Article: {{$data['thread']->title}}
+                        @if (!Auth::guest() && $data['thread']->FK_user_id == Auth::user()->id)
+                            <a href="{{url('/thread/delete/')}}/{{$data['thread']->id}}" class="btn btn-danger btn-xs pull-right">
+                                <i class="fa fa-btn fa-trash" title="delete"></i>
+                                delete article
+                            </a>
+                        @endif
+                    </div>
                     <div class="panel-content">
 
                         @if (Auth::guest())
@@ -40,6 +47,9 @@
 
                         <div class="url">
                             <a href="{{$data['thread']->url}}" class="urlTitle">{{$data['thread']->title}}</a>
+                            @if (!Auth::guest() && $data['thread']->FK_user_id == Auth::user()->id)
+                                <a href="{{url('/thread/edit/')}}/{{$data['thread']->id}}" class="btn btn-primary btn-xs edit-btn">edit</a>
+                            @endif
                         </div>
 
                         <div class="info">
@@ -59,14 +69,12 @@
                                             <div class="comment-info">
                                                 posted by {{$comment[1]}}
                                                 on {{$comment[0]->created_at}}
-                                                @if (!Auth::guest())
-                                                    @if ($comment[1] == Auth::user()->name)
-                                                        <a href="{{ url('/comments/edit/')}}/{{$comment[0]->id}} " class="btn btn-primary btn-xs edit-btn">edit</a>
-                                                        <a href="{{ url('/comments/delete/') }}/{{$comment[0]->id}}" class="btn btn-danger btn-xs edit-btn">
-                                                            <i class="fa fa-btn fa-trash" title="delete"></i>
-                                                            delete
-                                                        </a>
-                                                    @endif
+                                                @if (!Auth::guest() && $comment[1] == Auth::user()->name)
+                                                    <a href="{{ url('/comments/edit/')}}/{{$comment[0]->id}} " class="btn btn-primary btn-xs edit-btn">edit</a>
+                                                    <a href="{{ url('/comments/delete/') }}/{{$comment[0]->id}}" class="btn btn-danger btn-xs edit-btn">
+                                                        <i class="fa fa-btn fa-trash" title="delete"></i>
+                                                        delete
+                                                    </a>
                                                 @endif
                                             </div>
                                         </li>
