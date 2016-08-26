@@ -19,7 +19,9 @@ Route::get('/', [
 ]);
 
 
-Route::get('/{id}', [
-    'as' => 'welcome',
+Route::get('/thread/{id}', [
+    'as' => 'home',
     'uses' => 'Controller@getThread'
 ]);
+
+Route::auth();

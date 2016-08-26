@@ -26,16 +26,21 @@ class Controller extends BaseController
         {
             if ($thread->deleted == 0)
             {
+                $upvotes = Vote::where(['FK_thread_id' => $thread->id, 'upordown' => 1])->count();
+                $downvotes = Vote::where(['FK_thread_id' => $thread->id, 'upordown' => 0])->count();;
+                $totalvotes = $upvotes - $downvotes;
+                //echo $totalvotes . '<br>';
                 $currentid = $thread->FK_user_id;
                 $currentuser = UsersUse::find($currentid);
+                $commentcount = Comment::where(['FK_thread_id' => $thread->id])->count();
+                //echo $commentcount . '<br>';
 
-                $threadArray[$i] = array($thread,$currentuser);
+                $threadArray[$i] = array($thread,$currentuser,$commentcount,$totalvotes);
                 $i++;
             }
         }
 
         //return dd($threadArray);
-
         //$users = UsersUse::all();
 
         return view ('welcome', ['threads' => $threadArray]);
