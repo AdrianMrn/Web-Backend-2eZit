@@ -24,7 +24,6 @@
                                     <div class="vote">
                                         <form action="{{ url('/vote/up') }}" method="POST" class="form-inline upvote">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="userid" value="{{Auth::user()->id}}">
                                             <button name="article_id" value="{{$thread[0]->id}}">
                                                     <i class="fa fa-btn fa-caret-up upvote" title="upvote"></i>
                                             </button>
@@ -32,7 +31,6 @@
 
                                         <form action="{{ url('/vote/down') }}" method="POST" class="form-inline downvote">
                                             {{ csrf_field() }}
-                                            <input type="hidden" name="userid" value="{{Auth::user()->id}}">
                                             <button name="article_id" value="{{$thread[0]->id}}">
                                                 <i class="fa fa-btn fa-caret-down downvote" title="downvote"></i>
                                             </button>

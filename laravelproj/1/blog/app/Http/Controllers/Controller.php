@@ -35,7 +35,7 @@ class Controller extends BaseController
                 $totalvotes = $upvotes - $downvotes;
                 $currentuserid = $thread->FK_user_id;
                 $currentuser = UsersUse::find($currentuserid);
-                $commentcount = Comment::where(['FK_thread_id' => $thread->id])->count();
+                $commentcount = Comment::where(['FK_thread_id' => $thread->id, 'deleted' => 0])->count();
 
                 $threadArray[$i] = array($thread,$currentuser->name,$commentcount,$totalvotes);
                 $i++;
@@ -58,7 +58,7 @@ class Controller extends BaseController
 
         $comments = Comment::where('FK_thread_id',$id)->get();
         $commentArray[] = array();
-        $commentcount = Comment::where(['FK_thread_id' => $thread->id])->count();
+        $commentcount = Comment::where(['FK_thread_id' => $thread->id, 'deleted' => 0])->count();
 
         $i = 0;
         foreach ($comments as $comment)
@@ -95,7 +95,7 @@ class Controller extends BaseController
         $thread->remember_token = $request->_token;
         $thread->save();
 
-        return Redirect::to(url('/'))->with('message','Comment posted successfully!');
+        return Redirect::to(url('/'))->with('message','Thread posted successfully!');
     }
 
     public function editThread($id) {
@@ -125,25 +125,55 @@ class Controller extends BaseController
 
 
     public function upvote(Request $request) {
-        $vote = new Vote;
-        $vote->upordown = 1;
-        $vote->FK_thread_id = $request->article_id;
-        $vote->FK_user_id = Auth::user()->id;
-        $vote->remember_token = $request->_token;
-        $vote->save();
+        $checkvote = Vote::where(['FK_user_id' => Auth::user()->id, 'FK_thread_id' => $request->article_id])->first();
+        $checkifupvote = Vote::where(['FK_user_id' => Auth::user()->id, 'upordown' => 1, 'FK_thread_id' => $request->article_id])->first();
 
-        return Redirect::back()->with('message','Comment upvoted successfully!');
+        if ($checkvote == null) {
+            $vote = new Vote;
+            $vote->upordown = 1;
+            $vote->FK_thread_id = $request->article_id;
+            $vote->FK_user_id = Auth::user()->id;
+            $vote->remember_token = $request->_token;
+            $vote->save();
+
+            return Redirect::back()->with('message','Thread upvoted successfully!');
+
+        } elseif ($checkvote != null && $checkifupvote != null) {
+            return Redirect::back()->with('message','You have already upvoted this thread!');
+        } else {
+            $vote = Vote::find($checkvote->id);
+
+            $vote->upordown = 1;
+            $vote->save();
+
+            return Redirect::back()->with('message','Vote changed successfully!');
+        }
     }
 
     public function downvote(Request $request) {
-        $vote = new Vote;
-        $vote->upordown = 0;
-        $vote->FK_thread_id = $request->article_id;
-        $vote->FK_user_id = Auth::user()->id;
-        $vote->remember_token = $request->_token;
-        $vote->save();
+        $checkvote = Vote::where(['FK_user_id' => Auth::user()->id, 'FK_thread_id' => $request->article_id])->first();
+        $checkifupvote = Vote::where(['FK_user_id' => Auth::user()->id, 'upordown' => 0, 'FK_thread_id' => $request->article_id])->first();
 
-        return Redirect::back()->with('message','Comment downvoted successfully!');
+        if ($checkvote == null) {
+            $vote = new Vote;
+            $vote->upordown = 0;
+            $vote->FK_thread_id = $request->article_id;
+            $vote->FK_user_id = Auth::user()->id;
+            $vote->remember_token = $request->_token;
+            $vote->save();
+
+            return Redirect::back()->with('message','Thread downvoted successfully!');
+
+        } elseif ($checkvote != null && $checkifupvote != null) {
+            return Redirect::back()->with('message','You have already downvoted this thread!');
+        } else {
+            $vote = Vote::find($checkvote->id);
+
+            $vote->upordown = 0;
+            $vote->save();
+
+            return Redirect::back()->with('message','Vote changed successfully!');
+        }
     }
 
 
