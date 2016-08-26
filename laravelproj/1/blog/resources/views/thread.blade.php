@@ -58,7 +58,16 @@
                                             <div class="comment-body">{{$comment[0]->text}}</div>
                                             <div class="comment-info">
                                                 posted by {{$comment[1]}}
-                                                on {{$comment[0]->created_at}}<br><br>
+                                                on {{$comment[0]->created_at}}
+                                                @if (!Auth::guest())
+                                                    @if ($comment[1] == Auth::user()->name)
+                                                        <a href="{{ url('/comments/edit/{id}') }}" class="btn btn-primary btn-xs edit-btn">edit</a>
+                                                        <a href="{{ url('/comments/delete/') }}/{{$comment[0]->id}}" class="btn btn-danger btn-xs edit-btn">
+                                                            <i class="fa fa-btn fa-trash" title="delete"></i>
+                                                            delete
+                                                        </a>
+                                                    @endif
+                                                @endif
                                             </div>
                                         </li>
                                     @endforeach

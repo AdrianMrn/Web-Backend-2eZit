@@ -91,6 +91,7 @@ class Controller extends BaseController
         //return dd($data, $commentArray);
 
         //return view ('thread', ['thread' => $thread],['comments' => $commentArray],['votes' => $totalvotes],['op' => $opName],['commentcount' => $commentcount]);
+        //return dd($commentArray);
         return view ('thread', ['data' => $data],['comments' => $commentArray]);
     }
 
@@ -121,7 +122,7 @@ class Controller extends BaseController
         $vote->remember_token = $request->_token;
         $vote->save();
 
-        return Redirect::back()->with('message','Operation Successful !');
+        return Redirect::back()->with('message','Comment upvoted successfully!');
     }
 
     public function downvote(Request $request) {
@@ -132,7 +133,7 @@ class Controller extends BaseController
         $vote->remember_token = $request->_token;
         $vote->save();
 
-        return Redirect::back()->with('message','Operation Successful !');
+        return Redirect::back()->with('message','Comment downvoted successfully!');
     }
 
 
@@ -144,15 +145,22 @@ class Controller extends BaseController
         $comment->remember_token = $request->_token;
         $comment->save();
 
-        return Redirect::back()->with('message','Operation Successful !');
+        return Redirect::back()->with('message','Comment posted successfully!');
     }
 
     public function editComment() {
 
+
+        return Redirect::back()->with('message','Comment edited successfully!');
     }
 
-    public function deleteComment() {
+    public function deleteComment($id) {
+        $comment = Comment::find($id);
 
+        $comment->deleted = 1;
+        $comment->save();
+
+        return Redirect::back()->with('message','Comment deleted successfully!');
     }
 
     /*public function getWelcome(){
