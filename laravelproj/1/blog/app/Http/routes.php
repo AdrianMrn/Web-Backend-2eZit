@@ -24,4 +24,15 @@ Route::get('/thread/{id}', [
     'uses' => 'Controller@getThread'
 ]);
 
+Route::get('/thread/add', 'Controller@postThread');
+
+Route::get('/thread/{id}/edit', 'Controller@editThread');
+
+Route::post('/thread/{id}', 'Controller@deleteThread');
+
+
+Route::post('/vote/up', 'Controller@upvote');
+Route::post('/vote/down', 'Controller@downvote');
+
 Route::auth();
+
